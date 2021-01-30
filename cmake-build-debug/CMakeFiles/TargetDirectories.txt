@@ -1,0 +1,3 @@
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/cmake-build-debug/CMakeFiles/MESUltimate.dir
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/cmake-build-debug/CMakeFiles/rebuild_cache.dir

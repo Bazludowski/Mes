@@ -1,0 +1,6 @@
+﻿  Main.cpp
+g:\projekty\mesultimate\mesultimate\lab5.h(47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+g:\projekty\mesultimate\mesultimate\lab51.h(48): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+g:\projekty\mesultimate\mesultimate\lab2.h(35): warning C4715: 'lab2': not all control paths return a value
+  MESUltimate.vcxproj -> G:\Projekty\MESUltimate\Debug\MESUltimate.exe
+  MESUltimate.vcxproj -> G:\Projekty\MESUltimate\Debug\MESUltimate.pdb (Partial PDB)

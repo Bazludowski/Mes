@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/Main.cpp
+iostream
+-
+ULTIMATE.h
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/ULTIMATE.h
+
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/ULTIMATE.h
+string
+-
+sstream
+-
+fstream
+-
+iostream
+-
+struct.h
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/struct.h
+iomanip
+-
+
+C:/Users/bowel/OneDrive/Pulpit/MESUltimate/struct.h
+string
+-
+sstream
+-
+fstream
+-
+iostream
+-
+
