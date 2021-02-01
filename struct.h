@@ -26,24 +26,30 @@ struct element {
 struct GlobalData {
     double w = 0.1;
     double h = 0.1;
-    int n_w = 4;
-    int n_h = 4;
+    int n_w = 31;
+    int n_h = 31;
     int n_n = n_w*n_h;
     int n_e = (n_w - 1)*(n_h - 1);
     int ro = 7800;
     int c = 700;
-    double st = 500;
-    double dt = 50;
+    double st = 100;
+    double dt = 1;
     double Talfa = 1200;
-    double **HG = new double *[n_n];
-    double **CG = new double *[n_n];
-    double *PG = new double [n_n];
-    double **HGZ = new double *[n_n];
-    double *PGZ  = new double[n_n];
+    double **HG;
+    double **CG;
+    double *PG;
+    double **HGZ;
+    double *PGZ;
     double k = 25.0;
     double alfa = 300;
-    double *t0 = new double[n_n];
+    double *t0;
     GlobalData (){
+        HG = new double *[n_n];
+        CG = new double *[n_n];
+        PG = new double [n_n];
+        HGZ = new double *[n_n];
+        PGZ = new double [n_n];
+        t0 = new double [n_n];
         for (int i = 0; i < n_n; i++){
             HG[i] = new double [n_n];
             CG[i] = new double [n_n];
@@ -73,7 +79,6 @@ struct elem4 {
     double w41 = 0.652145; // z plusem
     double w42 = 0.347854; // z minusem
     double waga[4] = {0.0};
-    double k = 30.00;
     elem4()
     {
         ksi2[0] = -pc1;

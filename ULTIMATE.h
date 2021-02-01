@@ -7,13 +7,12 @@
 #include <iomanip>
 using namespace std;
 
-void HBC(element *elementy, node *wierzcholki, int bok, int flaga){
+void HBC(element *elementy, node *wierzcholki, int bok, int flaga, GlobalData *data){
     double pitagoras = pow(wierzcholki[elementy->id[bok]-1].x-wierzcholki[elementy->id[(bok+1)%4]-1].x,2.0)+pow(wierzcholki[elementy->id[bok]-1].y-wierzcholki[elementy->id[(bok+1)%4]-1].y,2.0);
-//zmienna bok mowi dla ktorego boku kwadratu bedziemy liczyc, pitagoras
+//zmienna bok mowi dla ktorego boku kwadratu bedziemy liczyc, pitagoras zpushuj sie byku
     double detJ = sqrt(pitagoras)/2.0; //dzielimy przez dwa bo w ukladzie lokalnym (kwadracie) bok ma 2 //DetJ to stosunek tego w rzeczywistosci do tego w ukladzie lokalnym
     double n[4][4] = {0.0};
     elem4 el;
-    GlobalData data;
     int flagahbc = flaga*flaga;
     double ksix, etax = 0.0;
     switch(flaga){
@@ -116,10 +115,10 @@ void HBC(element *elementy, node *wierzcholki, int bok, int flaga){
     for(int hbc = 0; hbc < flaga; hbc++){
         for (int hbc2 = 0; hbc2 < 4; hbc2++) {
             for (int hbc3 = 0; hbc3 < 4; hbc3++) {
-                elementy->HBCL[hbc2][hbc3] += detJ*data.alfa*n[hbc][hbc2]*n[hbc][hbc3]*el.waga[hbc];
+                elementy->HBCL[hbc2][hbc3] += detJ*data->alfa*n[hbc][hbc2]*n[hbc][hbc3]*el.waga[hbc];
 //            cout<<detJ*data.alfa*n[hbc][hbc2]*n[hbc][hbc3]<<" ";
             }
-            elementy->PL[hbc2]+=-data.alfa*detJ*n[hbc][hbc2]*el.waga[hbc]*data.Talfa;
+            elementy->PL[hbc2]+=-data->alfa*detJ*n[hbc][hbc2]*el.waga[hbc]*data->Talfa;
         }
 //    cout<<endl;
     }
@@ -172,12 +171,11 @@ double* gauss (double **HZast, double *PZast, int size) {
     return x;
 }
 
-void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
+void Macierz(element *elementy, node *wierzcholki, GlobalData *data) {
     int flaga = 3;
     int flag = flaga * flaga;
-    GlobalData data = *dane;
     element ele;
-    for (int elementid = 0; elementid < data.n_e; elementid++) {
+    for (int elementid = 0; elementid < data->n_e; elementid++) {
         elem4 el;
         double x[4];
         double y[4];
@@ -202,7 +200,7 @@ void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
 //                cout<<"Pierwszy if: " << elementy[elementid].id[bok]-1 << " " << wierzcholki[elementy[elementid].id[bok]-1].x<< " " << wierzcholki[elementy[elementid].id[bok]-1].BC<<endl;
                 if(wierzcholki[elementy[elementid].id[((bok+1)%4)]-1].BC==1){
 //                    cout <<"Drugi if: "<< elementy[elementid].id[((bok+1)%4)]-1 << " " << wierzcholki[elementy[elementid].id[((bok+1)%4)]-1].x << " " << wierzcholki[elementy[elementid].id[((bok+1)%4)]-1].BC<<endl;
-                    HBC(&elementy[elementid], wierzcholki, bok, flaga);
+                    HBC(&elementy[elementid], wierzcholki, bok, flaga, data);
                 }
             }
         }
@@ -355,11 +353,11 @@ void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
                     dN_dx_dN_dx_T[ip][i][j] = dN_dx[ip][i] * dN_dx[ip][j];
                     dN_dy_dN_dy_T[ip][i][j] = dN_dy[ip][i] * dN_dy[ip][j];
                     NTransponowane[ip][i][j] = Ni[ip][i] * Ni[ip][j];
-                    funkcja[ip][i][j] = data.k * (dN_dx_dN_dx_T[ip][i][j] + dN_dy_dN_dy_T[ip][i][j]) * det_J[ip]* el.waga[ip / flaga] *
+                    funkcja[ip][i][j] = data->k * (dN_dx_dN_dx_T[ip][i][j] + dN_dy_dN_dy_T[ip][i][j]) * det_J[ip]* el.waga[ip / flaga] *
                                         el.waga[ip % flaga];
                     elementy[elementid].HL[i][j] += funkcja[ip][i][j]; //przypisanie wynikow do macierzy HL
                     elementy[elementid].CL[i][j] +=
-                            NTransponowane[ip][i][j] * data.c * data.ro * det_J[ip] * el.waga[ip / flaga] *
+                            NTransponowane[ip][i][j] * data->c * data->ro * det_J[ip] * el.waga[ip / flaga] *
                             el.waga[ip % flaga];
                 }
             }
@@ -382,20 +380,20 @@ void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
 //        }
 
     }
-    for (int hgp = 0; hgp < data.n_e; hgp++) {
+    for (int hgp = 0; hgp < data->n_e; hgp++) {
         for (int hgi = 0; hgi < 4; hgi++) {
             for (int hgj = 0; hgj < 4; hgj++) {
-                data.HG[elementy[hgp].id[hgi] - 1][elementy[hgp].id[hgj] - 1] += elementy[hgp].HL[hgi][hgj]+elementy[hgp].HBCL[hgi][hgj];
-                data.CG[elementy[hgp].id[hgi] - 1][elementy[hgp].id[hgj] - 1] += elementy[hgp].CL[hgi][hgj];
+                data->HG[elementy[hgp].id[hgi] - 1][elementy[hgp].id[hgj] - 1] += elementy[hgp].HL[hgi][hgj]+elementy[hgp].HBCL[hgi][hgj];
+                data->CG[elementy[hgp].id[hgi] - 1][elementy[hgp].id[hgj] - 1] += elementy[hgp].CL[hgi][hgj];
             }
-            data.PG[elementy[hgp].id[hgi]-1]+=elementy[hgp].PL[hgi];
+            data->PG[elementy[hgp].id[hgi]-1]+=elementy[hgp].PL[hgi];
         }
     }
-    for (int zas1 = 0; zas1 < data.n_n; zas1++){
-        data.PGZ[zas1] = -1 * data.PG[zas1];
-        for (int zas2 = 0; zas2<data.n_n; zas2++){
-            data.HGZ[zas1][zas2] = data.HG[zas1][zas2] + (data.CG[zas1][zas2]/data.dt);
-            data.PGZ[zas1] += (data.CG[zas1][zas2]/data.dt) * data.t0[zas2];
+    for (int zas1 = 0; zas1 < data->n_n; zas1++){
+        data->PGZ[zas1] = -1 * data->PG[zas1];
+        for (int zas2 = 0; zas2<data->n_n; zas2++){
+            data->HGZ[zas1][zas2] = data->HG[zas1][zas2] + (data->CG[zas1][zas2]/data->dt);
+            data->PGZ[zas1] += (data->CG[zas1][zas2]/data->dt) * data->t0[zas2];
         }
     }
 //    for (int cgy = 0; cgy < 16; cgy++) {
@@ -413,19 +411,19 @@ void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
 //    cout<<data.PG[px]<<" "<<endl;
 //}
 
-    dane->t0 = gauss(data.HGZ, data.PGZ, data.n_n);
+    data->t0 = gauss(data->HGZ, data->PGZ, data->n_n);
 
 
-    for (int i = 0; i < data.n_n; i++){
-        data.PG[i] = 0.0;
-        data.PGZ[i] = 0.0;
-        for (int j = 0; j< data.n_n; j++){
-            data.HG[i][j] = 0.0;
-            data.CG[i][j] = 0.0;
-            data.HGZ[i][j] = 0.0;
+    for (int i = 0; i < data->n_n; i++){
+        data->PG[i] = 0.0;
+        data->PGZ[i] = 0.0;
+        for (int j = 0; j< data->n_n; j++){
+            data->HG[i][j] = 0.0;
+            data->CG[i][j] = 0.0;
+            data->HGZ[i][j] = 0.0;
         }
     }
-    for (int i = 0; i<data.n_e; i++){
+    for (int i = 0; i<data->n_e; i++){
         for (int j = 0; j<4; j++){
             elementy[i].PL[j] = 0.0;
             for (int k = 0; k<4; k++){
@@ -435,6 +433,7 @@ void Macierz(element *elementy, node *wierzcholki, GlobalData*dane) {
             }
         }
     }
+
 }
 
 void Siatka() {
@@ -469,7 +468,7 @@ void Siatka() {
 //     cout << "Element " << i + 1 << ": \t" << el[i].id[0] << " " << el[i].id[1] << " " << el[i].id[2] << " "<< el[i].id[3] << endl;
     }
     for(int i = 0; i<=ceil(data.st/data.dt); i++) {
-        Macierz(el, nodes,&data);
+        Macierz(el, nodes, &data);
         double tmax = 0;
         double tmin = 1000000000000;
         for (int t00 = 0; t00 < data.n_n; t00++){
@@ -481,8 +480,8 @@ void Siatka() {
             }
 //        cout << data.t0[t00] << endl;
         }
-    cout << "tmax = "<<tmax<<endl;
-    cout << "tmin = "<<tmin<<"\n\n";
+        cout << "tmax = "<<tmax<<endl;
+        cout << "tmin = "<<tmin<<"\n\n";
     }
 }
 
